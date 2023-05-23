@@ -1,0 +1,15 @@
+! Total energy
+etot = 229.54*0.001 + 0.9382720813;
+! Initial H&V beta, alpha, emittances 
+bxi = 1.332822;
+axi = 0.672334;
+byi =  3.071617;
+ayi = -2.685431;
+emitx = 4.426264e-08;
+emity = 3.994434e-08;
+sigti = 0.000483;
+sigei = 0.000048;
+x0= 0.0;
+y0= 0.0;
+px0=0.0;
+py0=0.0;

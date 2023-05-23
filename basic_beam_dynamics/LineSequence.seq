@@ -1,0 +1,68 @@
+!--------- Machine parameters -------------!
+
+// Bending angle and magnetic length of the two 45deg bending dipoles
+
+rho = 1.4511;
+bending_angle = pi/4;
+lm_b = rho*bending_angle;
+
+// Ideal magnetic length of quadrupoles
+
+lm_q = 0.14;
+
+
+!--------------------------------- Element type declaration -------------------------------------!
+
+! Quadrupoles
+
+quad_radius = 0.016; // inner diameter of the quadrupole aperture 32mm
+QUAD: QUADRUPOLE, L = lm_q, APERTYPE=CIRCLE, APERTURE= quad_radius;
+
+! Dipoles
+half_width = 0.056/2;
+half_height = 0.021/2;
+DIPOLE45DEG : SBEND, L = lm_b , APERTYPE=RECTANGLE, APERTURE={half_width, half_height};
+
+BM1: DIPOLE45DEG,  L := lm_b,  ANGLE = bending_angle,
+,  E1=          0 ,  HGAP=     0.0, FINT=0.
+,  E2=          0;
+
+BM2: DIPOLE45DEG,  L := lm_b,  ANGLE = bending_angle,
+,  E1=          0 ,  HGAP=     0.0, FINT=0.
+,  E2=          0;
+
+
+!-------------------------------- MADX SEQUENCE ------------------------------!
+
+machine_length = 15.00;
+
+LINE: SEQUENCE, REFER = entry, L = machine_length ;
+
+Q1: QUAD, at = 0.7;
+
+Q2: QUAD, at = 1.4;
+
+Q3: QUAD, at = 2.5;
+
+Q4: QUAD, at = 3.1;
+
+Q5: QUAD, at = 4.7;
+
+BM1, at = 5.7;
+
+Q6: QUAD, at = 7.5;
+
+BM2, at = 8.2;
+
+Q7: QUAD, at = 11;
+
+Q8: QUAD, at = 12;
+
+Q9: QUAD, at = 13;
+
+Q10: QUAD, at = 13.7;
+
+ENDSEQUENCE;
+
+
+

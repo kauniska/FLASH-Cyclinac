@@ -1,0 +1,50 @@
+OPTION, INFO, -ECHO;
+
+!Initial beam parameters
+call, file = 'initial_optics.txt';
+
+beam, PARTICLE=PROTON, CHARGE=1, ENERGY=etot, EX=emitx, EY=emity, ET=emitz, SIGT= sigti, SIGE= sigei, DELTAP= 0.0;
+
+sigdeltap = sigei/(beam->beta*beam->beta);
+dispx := table(twiss,dx)*beam->beta;
+dispy := table(twiss,dy)*beam->beta;
+sigmax := sqrt(table(twiss,betx) * emitx + dispx*dispx*sigdeltap*sigdeltap);
+sigmay := sqrt(table(twiss,bety) * emity + dispy*dispy*sigdeltap*sigdeltap);
+brho = beam->PC / ( abs(beam->CHARGE) * CLIGHT * 1.e-9);
+
+! Sequence of the line
+call, file="LineSequence.seq";
+use,sequence=LINE;
+
+! Initial lattice parameters
+initial: BETA0, BETX = bxi, ALFX = axi, MUX = 0.0,
+                BETY = byi, ALFY = ayi, MUY = 0.0,
+                DX = 0.0, DPX = 0.0, DY = 0.0, DPY = 0.0,
+                X=x0, PX = px0, Y=y0, PY=py0;
+
+
+!---------------Quadrupole strenghts -----------------!
+
+Q1->k1     =        -9 ;
+Q2->k1     =         4 ;
+Q3->k1     =       -15 ;
+Q4->k1     =      11.5 ;
+Q5->k1     =      -6.5 ;
+Q6->k1     =      11.5 ;
+Q7->k1     =      -0.9 ;
+Q8->k1     =       4.1 ;
+Q9->k1     =        -1 ;
+Q10->k1     =     -1.5 ;
+
+
+select, flag = twiss, clear;
+select, flag = twiss, column = {name,KEYWORD,s,L,x,y,px,py,BETX,BETY,ALFX,ALFY,MUX,MUY,
+sigmax,sigmay,dispx,dispy,Dx,Dy,dpx,dpy,ANGLE,TILT,K0L,K1L,K1, APERTYPE,APER_1,APER_2,APER_3,APER_4};
+twiss, energy=etot,RMATRIX,CHROM,RIPKEN,BETA0=initial,DELTAP = dp,file='optics.twiss';
+
+PLOT,HAXIS=S, VAXIS=MUX, MUY;
+PLOT,HAXIS=S, VAXIS=sigmax, sigmay;
+PLOT,HAXIS=S, VAXIS=BETX, BETY;
+
+
+stop;
