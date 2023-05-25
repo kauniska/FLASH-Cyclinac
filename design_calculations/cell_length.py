@@ -34,21 +34,23 @@ betas = []
 m = 983.3  # MeV/c2
 W = 70  # Injection at 70 MeV
 Beta = beta(W)
-#print(W)
+print(W)
 
 # Define accelerator properties
-E0T = 5 # Accelerating gradient in MV/m
-phi = -30/180 * np.pi
-lambd = 299792458/(300*10**9) # 300 MHz
+E0T = 5*10**6 # Accelerating gradient
+#phi = -30/180 * np.pi
+phi = 2*np.pi
+lambd = 299792458/(3*10**9) # 3 GHz
 
 # Calculate cell lenghts until target kinetic energy of 230 MeV is reached
 while W < 230:
     betas.append(Beta)
     energies.append(W)
     l, Beta, W = calculate_cell_length(Beta, W, m, lambd, 1.602*10**(-19), E0T, phi)
-    #print(W)
+    print(W)
     cell_lengths.append(l)
-
-print(cell_lengths)
+    
+print("Total length of accelerator: ")
+print(np.sum(cell_lengths))
 plt.plot(betas, cell_lengths)
 plt.show()
